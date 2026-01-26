@@ -1,63 +1,186 @@
 
-<img src="ac-grid-5-red.svg" alt="drawing" width="900"/>
+<img src="images/ac-grid-5-red.svg" alt="drawing" width="900"/>
 
 # Research Computing Training
 
-## Training Name
+## Presentor
 
-Welcome to the Research Computing documentation template. This template provides a starting point for creating technical documentation for the Northeastern Research Computing team.
+Arsalan Akhter
 
-To run all the features in this markdown you will want to install the following packages:
+Research Computing Specialist
 
-* markdown code block runner
-* markdown converter
+[Research Computing](https://rc.northeastern.edu/research-computing-team/)
 
-## Example Code Block
+## Introduction to GPUs on Explorer
 
-Here's an example of how to include code in your documentation:
+Welcome to the session on Research Computing Training for using GPUs on Explorer! 
+
+
+Welcome to another session in the [Research Computing Spring 2026 Training Series](https://rc.northeastern.edu/research-computing-spring-training/)! This guide will help you get started with GPU computing on the Explorer cluster.
+
+Today this presentation will cover:
+
+1. [Which GPU Partitions are avaialable on Explorer?](#which-gpu-partitions-are-avaialable-on-explorer??)
+2. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer?)
+3. [What are GPUs, anyway?](#what-are-gpus-anyway?)
+4. [Ok, I know about GPUs on Explorer. How do I use them](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
+5. [Transfering data](#transfering-data)
+6. [Running jobs](#running-jobs)
+7. [Software](#software)
+8. [How to get help](#how-to-get-help)
+
+Lets get started!
+
+## Accessing Explorer
+To access the Explorer cluster, use SSH to connect from your local machine:
+```bash
+ssh username@login.explorer.northeastern.edu
+```
+Replace `username` with your actual username.
+
+## Which GPU Partitions are avaialable on Explorer?
+
+Here are 4 (plus one) of the commonly used GPU partitions on Explorer:
+- `gpu`: General-purpose GPU partition. (max: 8 hours)
+- `gpu-interactive`: Interactive GPU sessions for Open OnDemand based development/testing. (max: 2 hours)
+- `gpu-short`: Short-duration GPU jobs. Jobs in this partition are prioritized. Use this partition for quick tests or short tasks. (max: 2 hours)
+- `multigpu`: For jobs that require multiple GPUs. [See details here](https://rc-docs.northeastern.edu/en/latest/gpus/multigpu-partition-access.html) (max: 24 hours)
+- Bonus: `sharing`: GPUs shared by Northeastern PIs for general community use. (max: 1 hour)
+
+## Which GPU Types are available on Explorer?
+
+For any given partition, we can type the following command to see the available GPU types on that partition:
 
 ```bash
-# check version of python
-python3 --version
+sinfo -p <partition_name> -o "%G"
+```
+For example, for the `gpu` partition, we have:
+
+```bash
+sinfo -p gpu -o "%G"
+GRES
+gpu:v100-sxm2:4(S:0-1)
+gpu:t4:4(S:0-1)
+gpu:a100:3
+gpu:a100:4
+gpu:h200:8
+gpu:v100-pcie:2(S:0-1)
+gpu:v100-sxm2:3(S:0-1)
 ```
 
-```result
-Python 3.13.7
+> 💡 **Question for Audience:** Which GPUs are available in the `sharing` partition? 
+
+Hint: (Try `sinfo -p sharing -o "%G"`)
+
+> 💡 **Question for Audience:** Would it be useful to know which GPUs are available on a partition before submitting a job? 
+
+**Hint:** Try the following command:
+```bash
+sinfo -p gpu -O "NodeList,Gres:30,GresUsed:30"
 ```
 
-Or to run code in R
+## What are GPUs, anyway?
 
-```R
-dat<-rnorm(100)
-head(dat)
+Before we look at that question, can someone share what a core is?
+> **Answer:** A core is a processing unit that can independently execute instructions. 
 
-```
+CPUs have a few, complex cores.
 
-```result
-[1]  0.883054099  0.871387933  0.232951085  1.589874158  0.005366112
-[6] -0.448120929
-```
+GPUs, have thousands of smaller, simpler cores.
 
-And another example with python
-
-```python
-import random
-
-# Generate a random integer between 1 and 100 (inclusive)
-random_integer = random.randint(1, 100)
-print(f"Random integer: {random_integer}")
-```
+<img src="images/cpu_vs_gpu_official.jpg"/>
+(Source: https://blogs.nvidia.com/blog/whats-the-difference-between-a-cpu-and-a-gpu/)
 
 
+So it depends what do we want to achieve. For tasks that can be massively parallelized, GPUs are the perfect choice.
+
+Consider the analogy of delivering thousands of pizzas across a city. We have a few Ferraris and thousands of bicycles:
+
+- **CPUs (Ferraris):** A few high-speed vehicles that can deliver pizzas quickly to a limited number of locations.
+- **GPUs (Bicycles):** A large fleet of bicycles that can deliver pizzas to many locations in parallel.
+
+Which one would we choose? Fleet of bicycles, of course.
+
+<img src="images/cpu_vs_gpu_pizza_delivery.png"/>
+
+Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes with different data, listening to a megaphone. 
+
+Professors can do complex mathematical operations and problems much faster. 
+
+But if we need to just multiply a very large matrix, meaning computing a multiply and add operations for each slot in the result matrix, the stadium full of studetns will make more sense. 
+
+## Ok, I know about GPUs on Explorer. How do I use them?
+
+There are three main ways to use GPUs on Explorer:
+1. **Open OnDemand (OOD):** A web-based interface that allows you to run GPU jobs interactively.
+
+2. **Interactive Sessions:** You can request an interactive GPU session using `srun`
+
+3. **Batch Jobs:** You can submit batch jobs to the GPU partitions using SLURM job scripts.
+
+## Prerequisite
+
+Lets clone the directory that we'll be using for this demo
+
+1. In a terminal, let's login to `username@login.explorer.northeastern.edu`
+2. After logging in, lets type `cd /scratch/$USER`. This takes us to our own scratch directoy.
+3. Run the command `git clone ...`
+
+## Open OnDemand (OOD):
+
+We will run `gpu_simple.py` in Open OnDemand (OOD), by following these steps.
+
+1. Let's go to ood.explorer.northeastern.edu. Login.
+2. Under `Standard Apps`, lets select VSCode Server
+
+<img src="images/ood_main.png"/>
+
+3. Enter a (simple) password, (e.g. `123`), select `sharing` as partition, and select `1` GPU. Other items can be left as default.
+4. Hit Launch. 
+
+<img src="images/vscode_on_ood.png"/>
+
+5. Once the session is connected, open the folder that we just cloned in VSCode.
+6. Also open the Terminal by selecting View -> Terminal.
+7. Run the command `chmod +x setup_python_env.sh`. (This needs to be done only once to make it executable) 
+8. Run `./setup_python_env.sh` to activate the environment.
+9. Let's verify if the right python is selected by typing `which python`. It should point to the virtual environment.
+10. Now we are ready to test. In a terminal type `python gpu_simple.py`. It should say `CUDA_VISIBLE_DEVICES = 0`
+11. (Optional) For some more items, we can run  `python example1/gpu_test_torch.py`
+12. This concludes our demo for using Open OnDemand.
+
+## Interactive GPU Sessions:
+
+Since the environment is setup already, we can simply use this environment for an interactive session.
+
+1. Login to Explorer using a terminal: `ssh username@login.explorer.northeastern.edu`
+2. Go to the directory we cloned using the command `cd /scratch/$USER/`
+3. To get a GPU based session, type `srun --partition=sharing --gres=gpu:1 --pty bash`
+4. We can now actiavate our environment and have the python script run.
+```bash
+./setup_python_env.sh
+which python
+python example1/gpu_test_torch.py
+``` 
+5. We can also see what is in that file (and potentially modify if we need to). Try `vi example1/gpu_test_torch.py`. Hit `i` and insert an `nvidia-smi` command. Run again.
+6. This concludes our demo for using an interactive session with OOD.
+
+## Batch Jobs with SLURM:
+
+We can use the same scripts that we have to submit a job to the cluster. The benefit is that we can submit the job and go away, and come back later and get our results. This is done through `sbatch` scripts
+
+1. An example `sbatch` script is present at `example1/submit_job.sh`
+2. Type `sbatch example1/submit_job.sh`. It'll submit a job to the cluster, and create an output file when done. We can inspect the output.
+3. We can also inspect this file using `vi example1/submit_job.sh`. Notice that we pass flags similar to what we did in the `srun` session.
 
 
-## Additional Sections
-
-You can add more sections here as needed for your documentation.
-
----
-three dash lines make a delimiting line for text sections
-
+## Best Practices for Using GPUs on Explorer
+- **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
+- **Optimize Resource Requests:** Request only the resources you need.
+- **Monitor Your Jobs:** Use commands like `squeue` and `sacct` to monitor your GPU jobs.
+- **Use Efficient Libraries:** Utilize GPU-optimized libraries (e.g., CUDA, cuDNN) for better performance.
+- **Profile Your Code:** Use profiling tools to identify bottlenecks and optimize your GPU code.
+- 
 ---
 
 *For questions or support, contact the Research Computing team at [rchelp@northeastern.edu](mailto:rchelp@northeastern.edu)*
