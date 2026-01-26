@@ -3,7 +3,7 @@
 
 # Research Computing Training
 
-## Presentor
+## Presenter
 
 Arsalan Akhter
 
@@ -20,7 +20,7 @@ Welcome to another session in the [Research Computing Spring 2026 Training Serie
 
 Today this presentation will cover:
 
-1. [Which GPU Partitions are avaialable on Explorer?](#which-gpu-partitions-are-avaialable-on-explorer??)
+1. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer??)
 2. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer?)
 3. [What are GPUs, anyway?](#what-are-gpus-anyway?)
 4. [Ok, I know about GPUs on Explorer. How do I use them](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
@@ -38,7 +38,7 @@ ssh username@login.explorer.northeastern.edu
 ```
 Replace `username` with your actual username.
 
-## Which GPU Partitions are avaialable on Explorer?
+## Which GPU Partitions are available on Explorer?
 
 Here are 4 (plus one) of the commonly used GPU partitions on Explorer:
 - `gpu`: General-purpose GPU partition. (max: 8 hours)
@@ -108,7 +108,7 @@ Here is another analogy. Consider a group of professors in a room with large whi
 
 Professors can do complex mathematical operations and problems much faster. 
 
-But if we need to just multiply a very large matrix, meaning computing a multiply and add operations for each slot in the result matrix, the stadium full of studetns will make more sense. 
+But if we need to just multiply a very large matrix, meaning computing a multiply and add operations for each slot in the result matrix, the stadium full of students will make more sense. 
 
 ## Ok, I know about GPUs on Explorer. How do I use them?
 
@@ -157,14 +157,14 @@ Since the environment is setup already, we can simply use this environment for a
 1. Login to Explorer using a terminal: `ssh username@login.explorer.northeastern.edu`
 2. Go to the directory we cloned using the command `cd /scratch/$USER/`
 3. To get a GPU based session, type `srun --partition=sharing --gres=gpu:1 --pty bash`
-4. We can now actiavate our environment and have the python script run.
+4. We can now activate our environment and have the python script run.
 ```bash
 ./setup_python_env.sh
 which python
 python example1/gpu_test_torch.py
 ``` 
 5. We can also see what is in that file (and potentially modify if we need to). Try `vi example1/gpu_test_torch.py`. Hit `i` and insert an `nvidia-smi` command. Run again.
-6. This concludes our demo for using an interactive session with OOD.
+6. This concludes our demo for using an interactive session.
 
 ## Batch Jobs with SLURM:
 
