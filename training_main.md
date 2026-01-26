@@ -88,7 +88,7 @@ CPUs have a few, complex cores.
 
 GPUs, have thousands of smaller, simpler cores.
 
-<img src="images/cpu_vs_gpu_official.jpg"/>
+<img src="images/cpu_vs_gpu_official.jpg", width="500"/>
 (Source: https://blogs.nvidia.com/blog/whats-the-difference-between-a-cpu-and-a-gpu/)
 
 
@@ -101,7 +101,7 @@ Consider the analogy of delivering thousands of pizzas across a city. We have a 
 
 Which one would we choose? Fleet of bicycles, of course.
 
-<img src="images/cpu_vs_gpu_pizza_delivery.png"/>
+<img src="images/cpu_vs_gpu_pizza_delivery.png", width=500/>
 
 Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes with different data, listening to a megaphone. 
 
