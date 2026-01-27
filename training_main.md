@@ -23,10 +23,18 @@ This is a beginner-friendly introduction to using the GPUs on the Explorer clust
 
 By attending this presentation you will get an introduction to:
 
-1. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer??)
-2. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer?)
-3. [What are GPUs, anyway?](#what-are-gpus-anyway?)
-4. [Ok, I know about GPUs on Explorer. How do I use them?](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
+1. [Accessing Explorer](#accessing-explorer)
+2. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer)
+3. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer)
+4. [What are GPUs, anyway?](#what-are-gpus-anyway)
+5. [Ok, I know about GPUs on Explorer. How do I use them?](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
+6. [Prerequisite](#prerequisite)
+7. [Open OnDemand (OOD)](#open-ondemand-ood)
+8. [Interactive GPU Sessions](#interactive-gpu-sessions)
+9. [Batch Jobs with SLURM](#batch-jobs-with-slurm)
+10. [Monitoring Your Jobs](#monitoring-your-jobs)
+11. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
+12. [How to get help](#how-to-get-help)
 
 All these materials are also avaialble at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
 
@@ -204,16 +212,32 @@ We can use the same scripts that we have to submit a job to the cluster. The ben
 4. This concludes our demo for using batch jobs with SLURM.
 
 
+## Monitoring Your Jobs
+
+- To see how many resources are used by your current job, you can put `nvidia-smi` commands in your script.
+- Use `gpu-logs <jobid>` to see GPU usage statistics for your completed jobs.
+
 ## Best Practices for Using GPUs on Explorer
 - **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
   - If you have a short job, use `gpu-short` for faster scheduling.
   - Use `sbatch` for longer running gpu jobs.
 - **Optimize Resource Requests:** Request only the resources you need.
     - To see how many cpus you need, you can use `seff <jobid>` on a previoulsy completed job.
-    - To see how many resources are used by your current job, you can put `nvidia-smi` commands in your script.
-    - Use `gpu-logs <jobid>` to see GPU usage statistics for your completed jobs.
 - **Use Efficient Libraries:** Utilize GPU-optimized libraries (e.g., CUDA, cuDNN) for better performance.
 - **Profile Your Code:** Use profiling tools to identify bottlenecks and optimize your GPU code. 
+
+## How to get help
+
+Email the Research Computing team at [rchelp@northeastern.edu](mailto:rchelp@northeastern.edu).
+
+Come to [office hours](https://rc.northeastern.edu/getting-help/) hosted on Zoom.
+
+Or [book a consultation](https://rc.northeastern.edu/getting-help/) with an RC team member.
+
+Review our [Documentation](https://rc-docs.northeastern.edu/en/latest/index.html).
+
+Thank you!
+
 ---
 
 *For questions or support, contact the Research Computing team at [rchelp@northeastern.edu](mailto:rchelp@northeastern.edu)*
