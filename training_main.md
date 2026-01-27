@@ -218,6 +218,34 @@ We can use the same scripts that we have to submit a job to the cluster. The ben
 - To see how many resources are used by your current job, you can put `nvidia-smi` commands in your script.
 - Use `gpu-logs <jobid>` to see GPU usage statistics for your completed jobs.
 
+```bash
+gpu-logs 2374457
+                       GPU Info                       
+                        GPU #2                        
+            Time|    Memory|   GPU Utility|  Activity
+=====================================================
+2025-10-20T12:52|       0 %|           0 %|  inactive
+2025-10-20T12:53|       0 %|           0 %|  inactive
+2025-10-20T12:54|       0 %|           0 %|  inactive
+2025-10-20T12:55|       0 %|           0 %|  inactive
+2025-10-20T12:56|       0 %|           0 %|  inactive
+2025-10-20T12:57|   22.56 %|           0 %|  inactive
+2025-10-20T12:58|   22.56 %|           0 %|  inactive
+2025-10-20T12:59|   22.56 %|           0 %|  inactive
+2025-10-20T13:00|   22.56 %|           0 %|  inactive
+2025-10-20T13:01|   22.56 %|           0 %|  inactive
+2025-10-20T13:02|   77.98 %|           0 %|  inactive
+2025-10-20T13:03|   77.98 %|           0 %|  inactive
+2025-10-20T13:04|   77.98 %|           0 %|  inactive
+2025-10-20T13:05|   77.98 %|           0 %|  inactive
+2025-10-20T13:06|   77.98 %|           0 %|  inactive
+2025-10-20T13:07|    81.1 %|          56 %|  inactive
+2025-10-20T13:09|    81.1 %|          56 %|  inactive
+2025-10-20T13:11|    81.1 %|          56 %|  inactive
+```
+
+
+
 ## Using GPUs Efficiently
 
 GPUs can be very powerful, but only if used correctly. Let's look at some examples of inefficient vs. efficient GPU code:
