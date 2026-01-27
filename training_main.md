@@ -82,9 +82,9 @@ sinfo -p gpu -O "NodeList,Gres:30,GresUsed:30"
 
 We also have a GPU-monitor app avaialble on Open OnDemand (OOD) that shows the which gpu nodes are available/Idle.
 
-<img src="images/gpu-monitor1.png.jpg" width="500"/>
+<img src="images/gpu-monitor1.png" width="200"/>
 
-<img src="images/gpu-monitor2.png.jpg" width="500"/>
+<img src="images/gpu-monitor2.png" width="500"/>
 
 Once a certain GPU type Node seems free to you, use the following command in terminal to see if the node is indeed available.
 
