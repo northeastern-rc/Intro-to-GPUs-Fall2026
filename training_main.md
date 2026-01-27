@@ -1,5 +1,8 @@
 
-<img src="images/ac-grid-5-red.svg" alt="drawing" width="900"/>
+<img src="images/NU_logo_white.png" alt="drawing" width="900"/>
+
+<br>
+<br>
 
 # Research Computing Training
 
@@ -86,12 +89,13 @@ We also have a GPU-monitor app avaialble on Open OnDemand (OOD) that shows the w
 
 <img src="images/gpu-monitor2.png" width="500"/>
 
-Once a certain GPU type Node seems free to you, use the following command in terminal to see if the node is indeed available.
+Once a certain GPU type node seems free to you, use the following command in terminal to see if the node is indeed available.
 
 ```bash
  sinfo -n nodename --Format="Gres:30,GresUsed:30" 
 ```
 
+Please note that "MIXED" state does not mean that all GPUs are available. "MIXED" refers to the state of all the "CPUs" on the node, and not the GPUs. So that is why we need to check if the GPUs are available using the above command.
 
 
 ## What are GPUs, anyway?
@@ -146,7 +150,7 @@ Lets clone the directory that we'll be using for this demo
 
 1. In a terminal, let's login to `username@login.explorer.northeastern.edu`
 2. After logging in, lets type `cd /scratch/$USER`. This takes us to our own scratch directory.
-3. Run the command `git clone ...`
+3. Run the command `git clone git@github.com:northeastern-rc-training/Intro-to-GPUs-2026.git`
 
 ## Open OnDemand (OOD):
 
@@ -163,8 +167,11 @@ We will run `gpu_simple.py` in Open OnDemand (OOD), by following these steps.
 <img src="images/vscode_on_ood.png"/>
 
 5. Once the session is connected, open the folder that we just cloned in VSCode.
-6. Also open the Terminal by selecting View -> Terminal.
-7. Run the command `chmod +x setup_python_env.sh`. (This needs to be done only once to make it executable) 
+
+<img src="images/vscode.png"/>
+
+6. Also open the Terminal by selecting View -> Terminal. Go to the directory we just cloned.
+7. Run the command `chmod +x setup_python_env.sh` in the terminal (This needs to be done only once to make it executable) 
 8. Run `./setup_python_env.sh` to activate the environment.
 9. Let's verify if the right python is selected by typing `which python`. It should point to the virtual environment.
 10. Now we are ready to test. In a terminal type `python gpu_simple.py`. It should say `CUDA_VISIBLE_DEVICES = 0`
@@ -194,15 +201,19 @@ We can use the same scripts that we have to submit a job to the cluster. The ben
 1. An example `sbatch` script is present at `example1/submit_job.sh`
 2. Type `sbatch example1/submit_job.sh`. It'll submit a job to the cluster, and create an output file when done. We can inspect the output.
 3. We can also inspect this file using `vi example1/submit_job.sh`. Notice that we pass flags similar to what we did in the `srun` session.
+4. This concludes our demo for using batch jobs with SLURM.
 
 
 ## Best Practices for Using GPUs on Explorer
 - **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
+  - If you have a short job, use `gpu-short` for faster scheduling.
+  - Use `sbatch` for longer running gpu jobs.
 - **Optimize Resource Requests:** Request only the resources you need.
-- **Monitor Your Jobs:** Use commands like `squeue` and `sacct` to monitor your GPU jobs.
+    - To see how many cpus you need, you can use `seff <jobid>` on a previoulsy completed job.
+    - To see how many resources are used by your current job, you can put `nvidia-smi` commands in your script.
+    - Use `gpu-logs <jobid>` to see GPU usage statistics for your completed jobs.
 - **Use Efficient Libraries:** Utilize GPU-optimized libraries (e.g., CUDA, cuDNN) for better performance.
-- **Profile Your Code:** Use profiling tools to identify bottlenecks and optimize your GPU code.
-- 
+- **Profile Your Code:** Use profiling tools to identify bottlenecks and optimize your GPU code. 
 ---
 
 *For questions or support, contact the Research Computing team at [rchelp@northeastern.edu](mailto:rchelp@northeastern.edu)*
