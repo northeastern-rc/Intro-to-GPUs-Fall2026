@@ -37,11 +37,11 @@ By attending this presentation you will get an introduction to:
 12. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
 13. [How to get help](#how-to-get-help)
 
-All these materials are also avaialble at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
+All these materials are also available at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
 
 You are welcome to follow along by typing the commands in your terminal. You can also just watch the demo, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
 
-Lets get started!
+Let's get started!
 
 ## Accessing Explorer
 To access the Explorer cluster, use SSH to connect from your local machine:
@@ -92,7 +92,7 @@ Hint: (Try `sinfo -p sharing -o "%G"`)
 sinfo -p gpu -O "NodeList,Gres:30,GresUsed:30"
 ```
 
-We also have a GPU-monitor app avaialble on Open OnDemand (OOD) that shows the which gpu nodes are available/Idle.
+We also have a GPU-monitor app available on Open OnDemand (OOD) that shows which GPU nodes are available/Idle.
 
 <img src="images/gpu-monitor1.png" width="200"/>
 
@@ -133,7 +133,7 @@ Which one would we choose? Fleet of bicycles, of course.
 
 <img src="images/cpu_vs_gpu_pizza_delivery.png" width=500/>
 
-Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes. Everystudent has the data that they need, and they are listening to a megaphone. 
+Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes. Every student has the data that they need, and they are listening to a megaphone. 
 
 Professors can do complex mathematical operations and problems much faster. 
 
@@ -155,10 +155,10 @@ There are three main ways to use GPUs on Explorer:
 
 ## Prerequisite
 
-Lets clone the directory that we'll be using for this demo
+Let's clone the directory that we'll be using for this demo
 
 1. In a terminal, let's login to `username@login.explorer.northeastern.edu`
-2. After logging in, lets type `cd /scratch/$USER`. This takes us to our own scratch directory.
+2. After logging in, let's type `cd /scratch/$USER`. This takes us to our own scratch directory.
 3. Run the command `git clone git@github.com:northeastern-rc-training/Intro-to-GPUs-2026.git`
 
 ## Open OnDemand (OOD):
@@ -166,7 +166,7 @@ Lets clone the directory that we'll be using for this demo
 We will run `gpu_simple.py` in Open OnDemand (OOD), by following these steps.
 
 1. Let's go to ood.explorer.northeastern.edu. Login.
-2. Under `Standard Apps`, lets select VSCode Server
+2. Under `Standard Apps`, let's select VSCode Server
 
 <img src="images/ood_main.png"/>
 
@@ -308,7 +308,6 @@ for images, labels in loader:
 **Key Takeaways:**
 - Always batch your data instead of processing one sample at a time
 - Use `num_workers` in DataLoader to parallelize data preprocessing
-
 - Minimize idle time on the GPU - keep it working!
 
 ## Best Practices for Using GPUs on Explorer
@@ -316,7 +315,7 @@ for images, labels in loader:
   - If you have a short job, use `gpu-short` for faster scheduling.
   - Use `sbatch` for longer running gpu jobs.
 - **Optimize Resource Requests:** Request only the resources you need.
-    - To see how many cpus you need, you can use `seff <jobid>` on a previoulsy completed job.
+    - To see how many cpus you need, you can use `seff <jobid>` on a previously completed job.
 - **Use Efficient Libraries:** Utilize GPU-optimized libraries (e.g., CUDA, cuDNN) for better performance.
 - **Profile Your Code:** Use profiling tools to identify bottlenecks and optimize your GPU code. 
 
