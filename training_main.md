@@ -33,8 +33,9 @@ By attending this presentation you will get an introduction to:
 8. [Interactive GPU Sessions](#interactive-gpu-sessions)
 9. [Batch Jobs with SLURM](#batch-jobs-with-slurm)
 10. [Monitoring Your Jobs](#monitoring-your-jobs)
-11. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
-12. [How to get help](#how-to-get-help)
+11. [Using GPUs Efficiently](#using-gpus-efficiently)
+12. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
+13. [How to get help](#how-to-get-help)
 
 All these materials are also avaialble at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
 
@@ -216,6 +217,99 @@ We can use the same scripts that we have to submit a job to the cluster. The ben
 
 - To see how many resources are used by your current job, you can put `nvidia-smi` commands in your script.
 - Use `gpu-logs <jobid>` to see GPU usage statistics for your completed jobs.
+
+## Using GPUs Efficiently
+
+GPUs can be very powerful, but only if used correctly. Let's look at some examples of inefficient vs. efficient GPU code:
+
+### Example 1: Batch Processing
+
+**Naive Approach (Inefficient):** Processing data one sample at a time
+
+```python
+import torch
+import time
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = torch.nn.Linear(2048, 2048).to(device)
+
+data_size = 50000
+
+start = time.time()
+# Sending 50,000 separate requests to GPU - lots of overhead!
+for _ in range(data_size):
+    data = torch.randn(1, 2048).to(device)
+    _ = model(data)
+
+torch.cuda.synchronize()
+print(f"Naive Time: {time.time() - start:.4f}s")
+```
+
+**Optimized Approach (Efficient):** Batching all data together
+
+```python
+import torch
+import time
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = torch.nn.Linear(2048, 2048).to(device)
+
+data_size = 50000
+
+start = time.time()
+# Send all data at once - much more efficient!
+data = torch.randn(data_size, 2048).to(device)
+_ = model(data)
+
+torch.cuda.synchronize()
+print(f"Optimized Time: {time.time() - start:.4f}s")
+```
+
+The optimized version is significantly faster because it reduces GPU overhead and improves parallelization.
+
+### Example 2: Data Loading
+
+**Naive Approach (Inefficient):** Single-threaded data loading
+
+```python
+import torch
+import torchvision
+from torch.utils.data import DataLoader
+
+dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=torchvision.transforms.ToTensor())
+
+# num_workers=0 means CPU loads data one-by-one (bottleneck!)
+loader = DataLoader(dataset, batch_size=256, num_workers=0)
+
+for images, labels in loader:
+    images = images.to("cuda")
+    # GPU sits idle waiting for data...
+```
+
+**Optimized Approach (Efficient):** Multi-threaded data loading with pinned memory
+
+```python
+import torch
+import torchvision
+from torch.utils.data import DataLoader
+
+dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=torchvision.transforms.ToTensor())
+
+# num_workers=2 uses multiple CPU cores to prepare data in parallel
+# pin_memory=True speeds up CPU-to-GPU transfers
+loader = DataLoader(dataset, batch_size=256, num_workers=2, pin_memory=True)
+
+for images, labels in loader:
+    # non_blocking=True allows GPU to process while CPU loads next batch
+    images = images.to("cuda", non_blocking=True)
+    # GPU stays busy!
+```
+
+**Key Takeaways:**
+- Always batch your data instead of processing one sample at a time
+- Use `num_workers` in DataLoader to parallelize data preprocessing
+
+- Minimize idle time on the GPU - keep it working!
 
 ## Best Practices for Using GPUs on Explorer
 - **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
