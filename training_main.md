@@ -16,7 +16,9 @@ Research Computing Specialist
 
 Welcome to another session in the [Research Computing Spring 2026 Training Series](https://rc.northeastern.edu/research-computing-spring-training/)! This guide will help you get started with GPU computing on the Explorer cluster.
 
-Today this presentation will cover:
+This is a beginner-friendly introduction to using the GPUs on the Explorer cluster.
+
+By attending this presentation you will get an introduction to:
 
 1. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer??)
 2. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer?)
@@ -25,9 +27,7 @@ Today this presentation will cover:
 
 All these materials are also avaialble at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
 
-You are welcome to follow along by typing the commands in your terminal. You can also just watch the demos, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
-
-
+You are welcome to follow along by typing the commands in your terminal. You can also just watch the demo, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
 
 Lets get started!
 
@@ -45,12 +45,12 @@ Here are 5 (plus one) of the commonly used GPU partitions on Explorer:
 - `gpu-interactive`: GPU sessions for Open OnDemand based development/testing. (max: 2 hours)
 - `gpu-short`: Short-duration GPU jobs. Jobs in this partition are prioritized. Use this partition for quick tests or short tasks. (max: 2 hours)
 - `multigpu`: For jobs that require multiple GPUs. [See details here](https://rc-docs.northeastern.edu/en/latest/gpus/multigpu-partition-access.html) (max: 24 hours)
-- `course-gpu`: Dedicated to courses-related GPU jobs. Instructors are welcome to request access for their courses. (max: 24 hours)
+- `courses-gpu`: Dedicated to courses-related GPU jobs. Instructors are welcome to request access for their courses. (max: 24 hours)
 - Bonus: `sharing`: GPUs shared by Northeastern PIs for general community use. (max: 1 hour)
 
 ## Which GPU Types are available on Explorer?
 
-For any given partition, we can type the following command to see the available GPU types on that partition:
+For any given partition, we can type the following command in the Explorer terminal to see the available GPU types on that partition:
 
 ```bash
 sinfo -p <partition_name> -o "%G"
@@ -79,6 +79,20 @@ Hint: (Try `sinfo -p sharing -o "%G"`)
 ```bash
 sinfo -p gpu -O "NodeList,Gres:30,GresUsed:30"
 ```
+
+We also have a GPU-monitor app avaialble on Open OnDemand (OOD) that shows the which gpu nodes are available/Idle.
+
+<img src="images/gpu-monitor1.png.jpg" width="500"/>
+
+<img src="images/gpu-monitor2.png.jpg" width="500"/>
+
+Once a certain GPU type Node seems free to you, use the following command in terminal to see if the node is indeed available.
+
+```bash
+ sinfo -n nodename --Format="Gres:30,GresUsed:30" 
+```
+
+
 
 ## What are GPUs, anyway?
 
