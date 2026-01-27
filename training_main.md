@@ -13,8 +13,6 @@ Research Computing Specialist
 
 ## Introduction to GPUs on Explorer
 
-Welcome to the session on Research Computing Training for using GPUs on Explorer! 
-
 
 Welcome to another session in the [Research Computing Spring 2026 Training Series](https://rc.northeastern.edu/research-computing-spring-training/)! This guide will help you get started with GPU computing on the Explorer cluster.
 
@@ -23,11 +21,13 @@ Today this presentation will cover:
 1. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer??)
 2. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer?)
 3. [What are GPUs, anyway?](#what-are-gpus-anyway?)
-4. [Ok, I know about GPUs on Explorer. How do I use them](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
-5. [Transfering data](#transfering-data)
-6. [Running jobs](#running-jobs)
-7. [Software](#software)
-8. [How to get help](#how-to-get-help)
+4. [Ok, I know about GPUs on Explorer. How do I use them?](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
+
+All these materials are also avaialble at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
+
+You are welcome to follow along by typing the commands in your terminal. You can also just watch the demos, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
+
+
 
 Lets get started!
 
@@ -40,11 +40,12 @@ Replace `username` with your actual username.
 
 ## Which GPU Partitions are available on Explorer?
 
-Here are 4 (plus one) of the commonly used GPU partitions on Explorer:
+Here are 5 (plus one) of the commonly used GPU partitions on Explorer:
 - `gpu`: General-purpose GPU partition. (max: 8 hours)
-- `gpu-interactive`: Interactive GPU sessions for Open OnDemand based development/testing. (max: 2 hours)
+- `gpu-interactive`: GPU sessions for Open OnDemand based development/testing. (max: 2 hours)
 - `gpu-short`: Short-duration GPU jobs. Jobs in this partition are prioritized. Use this partition for quick tests or short tasks. (max: 2 hours)
 - `multigpu`: For jobs that require multiple GPUs. [See details here](https://rc-docs.northeastern.edu/en/latest/gpus/multigpu-partition-access.html) (max: 24 hours)
+- `course-gpu`: Dedicated to courses-related GPU jobs. Instructors are welcome to request access for their courses. (max: 24 hours)
 - Bonus: `sharing`: GPUs shared by Northeastern PIs for general community use. (max: 1 hour)
 
 ## Which GPU Types are available on Explorer?
@@ -84,9 +85,10 @@ sinfo -p gpu -O "NodeList,Gres:30,GresUsed:30"
 Before we look at that question, can someone share what a core is?
 > **Answer:** A core is a processing unit that can independently execute instructions. 
 
-CPUs have a few, complex cores.
+In simple terms:
 
-GPUs, have thousands of smaller, simpler cores.
+- CPUs have a few, complex cores.
+- GPUs, have thousands of smaller, simpler cores.
 
 <img src="images/cpu_vs_gpu_official.jpg" width="500"/>
 
@@ -98,17 +100,22 @@ So it depends what do we want to achieve. For tasks that can be massively parall
 Consider the analogy of delivering thousands of pizzas across a city. We have a few Ferraris and thousands of bicycles:
 
 - **CPUs (Ferraris):** A few high-speed vehicles that can deliver pizzas quickly to a limited number of locations.
-- **GPUs (Bicycles):** A large fleet of bicycles that can deliver pizzas to many locations in parallel.
+ - **GPUs (Bicycles):** A large fleet of bicycles that can deliver pizzas to many locations in parallel.
 
 Which one would we choose? Fleet of bicycles, of course.
 
 <img src="images/cpu_vs_gpu_pizza_delivery.png" width=500/>
 
-Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes with different data, listening to a megaphone. 
+Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes. Everystudent has the data that they need, and they are listening to a megaphone. 
 
 Professors can do complex mathematical operations and problems much faster. 
 
-But if we need to just multiply a very large matrix, meaning computing a multiply and add operations for each slot in the result matrix, the stadium full of students will make more sense. 
+But if we need to just multiply a very large matrix, meaning computing multiply and add operations for each slot in the resulting matrix, the stadium full of students makes more sense!
+
+The point is, we use GPUs for tasks that can be massively parallelized, such as:
+- Machine Learning and Deep Learning
+- Scientific Simulations
+- Data Analysis and Visualization
 
 ## Ok, I know about GPUs on Explorer. How do I use them?
 
