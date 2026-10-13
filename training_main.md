@@ -17,7 +17,7 @@ Research Computing Specialist
 ## Introduction to GPUs on Explorer
 
 
-Welcome to another session in the [Research Computing Spring 2026 Training Series](https://rc.northeastern.edu/research-computing-spring-training/)! This guide will help you get started with GPU computing on the Explorer cluster.
+Welcome to another session in the [Research Computing Fall 2026 Training Series](https://rc.northeastern.edu/training/research-computing-fall-training/)! This guide will help you get started with GPU computing on the Explorer cluster.
 
 This is a beginner-friendly introduction to using the GPUs on the Explorer cluster.
 
@@ -42,7 +42,7 @@ By attending this presentation you will get an introduction to:
 
 All these materials are also available at [Intro To GPUs Github Repo](https://github.com/northeastern-rc/Intro-to-GPUs-Fall2026/blob/main/training_main.md).
 
-You are welcome to follow along by typing the commands in your terminal. You can also just watch the demo, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
+You are welcome to follow along by typing the commands in your terminal. You can also just watch the demo, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/training/research-computing-fall-training/). 
 
 Let's get started!
 
