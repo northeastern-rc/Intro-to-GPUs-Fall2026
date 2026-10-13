@@ -8,9 +8,9 @@
 
 ## Presenter
 
-Arsalan Akhter
+Ganesan Murugan
 
-Research Computing Specialist
+Lead Graduate Research Assistant
 
 [Research Computing](https://rc.northeastern.edu/research-computing-team/)
 
