@@ -449,19 +449,6 @@ nvidia-smi                   # should list your GPU
 ```
 If both come up empty, request a new session with `--gres=gpu:1`.
 
-### `invalid device ordinal`
-
-**Why:** Your code asks for a GPU number that your job doesn't have, e.g. `cuda:1` when you requested only one GPU. Slurm renumbers the GPUs it gives you starting from `0`, whichever physical GPU you got.
-
-**What to do:** Use `cuda` or `cuda:0` instead of a hard-coded number, and request as many GPUs as your code expects. Don't set `CUDA_VISIBLE_DEVICES` yourself; Slurm sets it for you.
-
-### Environment / module issues
-
-- **`ModuleNotFoundError: No module named 'torch'`**: Your virtual environment isn't active. Run `source gpu_env/bin/activate` and check with `which python`. In `sbatch` scripts, the `source` line has to be inside the script.
-- **`Permission denied` when running a `.sh` script**: Make it executable once with `chmod +x script.sh`.
-- **`Permission denied (publickey)` during `git clone`**: Your GitHub SSH key isn't set up on Explorer. Clone with the HTTPS URL instead: `git clone https://github.com/northeastern-rc/Intro-to-GPUs-Fall2026.git`.
-- **Batch job fails right away with no output file**: Check that the `--output` folder (e.g. `logs/`) exists. Slurm does not create it for you.
-
 ## Best Practices for Using GPUs on Explorer
 - **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
   - If you have a short job, use `gpu-short` for faster scheduling.
