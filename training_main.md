@@ -99,6 +99,16 @@ ssh username@login.explorer.northeastern.edu
 ```
 Replace `username` with your actual username.
 
+## Overview
+
+Cluster (entire system)
+  ↓
+Partitions (groups of nodes)
+  ↓
+Nodes (individual servers)
+  ↓
+Cores + GPUs + Memory (resources within each node)
+
 ## Which GPU Partitions are available on Explorer?
 
 Here are 5 (plus one) of the commonly used GPU partitions on Explorer:
