@@ -23,25 +23,74 @@ This is a beginner-friendly introduction to using the GPUs on the Explorer clust
 
 By attending this presentation you will get an introduction to:
 
-1. [Accessing Explorer](#accessing-explorer)
-2. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer)
-3. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer)
-4. [What are GPUs, anyway?](#what-are-gpus-anyway)
+1. [What are GPUs, anyway?](#what-are-gpus-anyway)
+2. [Accessing Explorer](#accessing-explorer)
+3. [Which GPU Partitions are available on Explorer?](#which-gpu-partitions-are-available-on-explorer)
+4. [Which GPU Types are available on Explorer?](#which-gpu-types-are-available-on-explorer)
 5. [Ok, I know about GPUs on Explorer. How do I use them?](#ok-i-know-about-gpus-on-explorer-how-do-i-use-them)
 6. [Prerequisite](#prerequisite)
 7. [Open OnDemand (OOD)](#open-ondemand-ood)
 8. [Interactive GPU Sessions](#interactive-gpu-sessions)
 9. [Batch Jobs with SLURM](#batch-jobs-with-slurm)
-10. [Monitoring Your Jobs](#monitoring-your-jobs)
-11. [Using GPUs Efficiently](#using-gpus-efficiently)
-12. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
-13. [How to get help](#how-to-get-help)
+10. [Requesting a Specific GPU Type](#requesting-a-specific-gpu-type)
+11. [Resource Limits: What Happens When You Hit Them?](#resource-limits-what-happens-when-you-hit-them)
+12. [Monitoring Your Jobs](#monitoring-your-jobs)
+13. [Using GPUs Efficiently](#using-gpus-efficiently)
+14. [Troubleshooting Common Errors](#troubleshooting-common-errors)
+15. [Best Practices for Using GPUs on Explorer](#best-practices-for-using-gpus-on-explorer)
+16. [How to get help](#how-to-get-help)
 
-All these materials are also available at [Intro To GPUs Github Repo](https://github.com/northeastern-rc-training/Intro-to-GPUs-2026/blob/main/training_main.md).
+All these materials are also available at [Intro To GPUs Github Repo](https://github.com/northeastern-rc/Intro-to-GPUs-Fall2026/blob/main/training_main.md).
 
 You are welcome to follow along by typing the commands in your terminal. You can also just watch the demo, and try it later at your own pace. The recordings for this session will also be made available later on the [Research Computing website](https://rc.northeastern.edu/research-computing-spring-training/). 
 
 Let's get started!
+
+## What are GPUs, anyway?
+
+Before we look at that question, can someone share what a core is?
+> **Answer:** A core is a processing unit that can independently execute instructions. 
+
+In simple terms:
+
+- CPUs have a few, complex cores.
+- GPUs, have thousands of smaller, simpler cores.
+
+<img src="images/cpu_vs_gpu_official.jpg" width="500"/>
+
+(Source: https://blogs.nvidia.com/blog/whats-the-difference-between-a-cpu-and-a-gpu/)
+
+
+So it depends what do we want to achieve. For tasks that can be massively parallelized, GPUs are the perfect choice.
+
+Consider the analogy of delivering thousands of pizzas across a city. We have a few Ferraris and thousands of bicycles:
+
+- **CPUs (Ferraris):** A few high-speed vehicles that can deliver pizzas quickly to a limited number of locations.
+ - **GPUs (Bicycles):** A large fleet of bicycles that can deliver pizzas to many locations in parallel.
+
+Which one would we choose? Fleet of bicycles, of course.
+
+<img src="images/cpu_vs_gpu_pizza_delivery.png" width=500/>
+
+Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes. Every student has the data that they need, and they are listening to a megaphone. 
+
+Professors can do complex mathematical operations and problems much faster. 
+
+But if we need to just multiply a very large matrix, meaning computing multiply and add operations for each slot in the resulting matrix, the stadium full of students makes more sense!
+
+The point is, we use GPUs for tasks that can be massively parallelized, such as:
+- Machine Learning and Deep Learning
+- Scientific Simulations
+- Data Analysis and Visualization
+
+### When NOT to use GPUs
+
+A GPU only helps if your code is written to use it. Stick with CPUs (e.g. the `short` partition) when:
+- Your code is serial or single-threaded, and does one step at a time.
+- Your program doesn't use a GPU-enabled library (PyTorch, TensorFlow, JAX, CuPy, RAPIDS, CUDA code, etc.). Requesting a GPU won't speed it up.
+- Your job is mostly file I/O, data cleaning, or small calculations.
+
+Requesting a GPU you don't use means waiting longer in the queue, and keeps that GPU away from someone who needs it.
 
 ## Accessing Explorer
 To access the Explorer cluster, use SSH to connect from your local machine:
@@ -56,9 +105,28 @@ Here are 5 (plus one) of the commonly used GPU partitions on Explorer:
 - `gpu`: General-purpose GPU partition. (max: 8 hours)
 - `gpu-interactive`: GPU sessions for Open OnDemand based development/testing. (max: 2 hours)
 - `gpu-short`: Short-duration GPU jobs. Jobs in this partition are prioritized. Use this partition for quick tests or short tasks. (max: 2 hours)
-- `multigpu`: For jobs that require multiple GPUs. [See details here](https://rc-docs.northeastern.edu/en/latest/gpus/multigpu-partition-access.html) (max: 24 hours)
+- `multigpu`: For jobs that require multiple GPUs. [Request access here](https://bit.ly/NURC-PartitionAccess) (max: 24 hours)
 - `courses-gpu`: Dedicated to courses-related GPU jobs. Instructors are welcome to request access for their courses. (max: 24 hours)
 - Bonus: `sharing`: GPUs shared by Northeastern PIs for general community use. (max: 1 hour)
+
+### Partition limits
+
+Each partition has limits. They apply **per user**, counted across all of your jobs:
+
+| Partition | Approval needed? | Time limit (default / max) | Running jobs | Submitted jobs | GPUs per job |
+|---|---|---|---|---|---|
+| `gpu-short` | No | 1 hour / 2 hours | 2 | 4 | 1 |
+| `gpu-interactive` | No | 1 hour / 2 hours | 2 | 4 | 1 |
+| `gpu` | No | 4 hours / 8 hours | 4 | 8 | 1 |
+| `multigpu` | Yes | 12 hours / 24 hours | 4 | 8 | 8 |
+| `sharing` | No | 30 minutes / 60 minutes | 2 | 4 | 1 |
+
+A few things to note:
+- If you don't pass `--time`, your job gets the **default** time limit, not the max. Set `--time` yourself if you need longer.
+- The `multigpu` partition requires a [Partition Access Request](https://bit.ly/NURC-PartitionAccess). You'll be asked for test results showing that your code really uses more than one GPU.
+- Use `scontrol show partition <partition_name>` to see the live configuration of any partition.
+
+For the full table, see the [Partitions documentation](https://rc.northeastern.edu/partitions/).
 
 ## Which GPU Types are available on Explorer?
 
@@ -107,43 +175,6 @@ Once a certain GPU type node seems free to you, use the following command in ter
 Please note that "MIXED" state does not mean that all GPUs are available. "MIXED" refers to the state of all the "CPUs" on the node, and not the GPUs. So that is why we need to check if the GPUs are available using the above command.
 
 
-## What are GPUs, anyway?
-
-Before we look at that question, can someone share what a core is?
-> **Answer:** A core is a processing unit that can independently execute instructions. 
-
-In simple terms:
-
-- CPUs have a few, complex cores.
-- GPUs, have thousands of smaller, simpler cores.
-
-<img src="images/cpu_vs_gpu_official.jpg" width="500"/>
-
-(Source: https://blogs.nvidia.com/blog/whats-the-difference-between-a-cpu-and-a-gpu/)
-
-
-So it depends what do we want to achieve. For tasks that can be massively parallelized, GPUs are the perfect choice.
-
-Consider the analogy of delivering thousands of pizzas across a city. We have a few Ferraris and thousands of bicycles:
-
-- **CPUs (Ferraris):** A few high-speed vehicles that can deliver pizzas quickly to a limited number of locations.
- - **GPUs (Bicycles):** A large fleet of bicycles that can deliver pizzas to many locations in parallel.
-
-Which one would we choose? Fleet of bicycles, of course.
-
-<img src="images/cpu_vs_gpu_pizza_delivery.png" width=500/>
-
-Here is another analogy. Consider a group of professors in a room with large whiteboards, vs. a stadium full of students with handheld calculators and sticky notes. Every student has the data that they need, and they are listening to a megaphone. 
-
-Professors can do complex mathematical operations and problems much faster. 
-
-But if we need to just multiply a very large matrix, meaning computing multiply and add operations for each slot in the resulting matrix, the stadium full of students makes more sense!
-
-The point is, we use GPUs for tasks that can be massively parallelized, such as:
-- Machine Learning and Deep Learning
-- Scientific Simulations
-- Data Analysis and Visualization
-
 ## Ok, I know about GPUs on Explorer. How do I use them?
 
 There are three main ways to use GPUs on Explorer:
@@ -159,7 +190,7 @@ Let's clone the directory that we'll be using for this demo
 
 1. In a terminal, let's login to `username@login.explorer.northeastern.edu`
 2. After logging in, let's type `cd /scratch/$USER`. This takes us to our own scratch directory.
-3. Run the command `git clone git@github.com:northeastern-rc-training/Intro-to-GPUs-2026.git`
+3. Run the command `git clone git@github.com:northeastern-rc/Intro-to-GPUs-Fall2026.git`
 
 ## Open OnDemand (OOD):
 
@@ -211,6 +242,57 @@ We can use the same scripts that we have to submit a job to the cluster. The ben
 2. Type `sbatch example1/submit_job.sh`. It'll submit a job to the cluster, and create an output file when done. We can inspect the output.
 3. We can also inspect this file using `vi example1/submit_job.sh`. Notice that we pass flags similar to what we did in the `srun` session.
 4. This concludes our demo for using batch jobs with SLURM.
+
+## Requesting a Specific GPU Type
+
+So far we have asked for `--gres=gpu:1`, which means "any one GPU". To ask for a specific type, put the GPU name (as shown by `sinfo -p <partition_name> -o "%G"`) in the middle:
+
+```bash
+# In an sbatch script
+#SBATCH --gres=gpu:t4:1
+
+# Or in an interactive session
+srun --partition=gpu --gres=gpu:a100:1 --pty bash
+```
+
+The GPU names on the `gpu` partition include `t4`, `v100-sxm2`, `v100-pcie`, `a100`, and `h200`.
+
+**Which one should I pick?**
+
+| GPU | Good for | Things to consider |
+|---|---|---|
+| `t4` | Learning, debugging, inference, small models | Least powerful and least GPU memory, but usually the shortest wait |
+| `v100-sxm2` / `v100-pcie` | Most general training jobs | A good middle ground |
+| `a100` | Large models, large batch sizes | Much faster with more memory; in high demand, so expect longer waits |
+| `h200` | Very large models that need a lot of GPU memory | Most powerful, and usually the longest wait |
+
+> 💡 **Rule of thumb:** If any GPU will do, ask for `--gres=gpu:1` and let Slurm choose. It starts your job on whichever GPU frees up first. Ask for a specific type only when your job needs it (e.g. it needs more GPU memory). Asking for an A100 for a 5-minute test can mean waiting hours for a job a T4 would have finished already.
+
+Once your job is running, `nvidia-smi` shows which GPU you got and how much memory it has.
+
+## Resource Limits: What Happens When You Hit Them?
+
+Slurm enforces the limits from the [partition limits table](#partition-limits). Here is what each one looks like:
+
+| What happened | What you will see | What to do |
+|---|---|---|
+| Job ran longer than `--time` | Job is killed; state is `TIMEOUT` | Request more time (up to the partition max), or save checkpoints so the job can resume |
+| Job used more RAM than `--mem` | Job is killed; state is `OUT_OF_MEMORY` | Request more `--mem` |
+| Too many jobs submitted | `sbatch` refuses the job, or it waits in `squeue` with reason `QOSMaxSubmitJobPerUserLimit` / `job violates accounting/QOS policy` | Wait for some of your jobs to finish |
+| Too many jobs running | Extra jobs wait (`PENDING`) with a reason like `QOSMaxJobsPerUserLimit` | Nothing to fix; they start once earlier jobs finish |
+| Asked for more than the partition allows (e.g. `--time=12:00:00` on `gpu`) | Job is rejected or never starts | Lower the request, or pick a different partition |
+
+To find out why a job ended or why it is still waiting:
+
+```bash
+# Why is my job still pending? (see the REASON column)
+squeue -u $USER
+
+# How did my finished job end?
+sacct -j <jobid> --format=JobID,JobName,Partition,State,Elapsed,Timelimit,ExitCode
+```
+
+> **Note:** You may see `job violates accounting/QOS policy` even when you are under your own limit. This happens when your whole Slurm **account** (your group) hits the overall limit of 10,000 jobs. It goes away once some of those jobs start or finish.
 
 
 ## Monitoring Your Jobs
@@ -337,6 +419,48 @@ for images, labels in loader:
 - Always batch your data instead of processing one sample at a time
 - Use `num_workers` in DataLoader to parallelize data preprocessing
 - Minimize idle time on the GPU - keep it working!
+
+## Troubleshooting Common Errors
+
+### `CUDA out of memory`
+
+```
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 GiB ...
+```
+
+**Why:** Your model, data, and intermediate results don't fit in the GPU's memory. GPU memory is separate from the `--mem` RAM you request.
+
+**What to do:**
+- Lower your batch size. This is the most common fix.
+- Run `nvidia-smi` while the job runs to see how much memory the GPU has and how much is in use.
+- During evaluation, wrap your code in `with torch.no_grad():` so PyTorch doesn't keep gradients you won't use.
+- If it still doesn't fit, request a GPU with more memory (see [Requesting a Specific GPU Type](#requesting-a-specific-gpu-type)).
+
+### No GPU found / `torch.cuda.is_available()` returns `False`
+
+**Why:** Usually no GPU was allocated to your job. For example:
+- You are running on a **login node** instead of inside an `srun` session or `sbatch` job.
+- You left out `--gres=gpu:1`. Choosing a GPU partition alone does not give you a GPU.
+
+**What to do:** Check that Slurm actually gave you a GPU:
+```bash
+echo $CUDA_VISIBLE_DEVICES   # should print a number, e.g. 0
+nvidia-smi                   # should list your GPU
+```
+If both come up empty, request a new session with `--gres=gpu:1`.
+
+### `invalid device ordinal`
+
+**Why:** Your code asks for a GPU number that your job doesn't have, e.g. `cuda:1` when you requested only one GPU. Slurm renumbers the GPUs it gives you starting from `0`, whichever physical GPU you got.
+
+**What to do:** Use `cuda` or `cuda:0` instead of a hard-coded number, and request as many GPUs as your code expects. Don't set `CUDA_VISIBLE_DEVICES` yourself; Slurm sets it for you.
+
+### Environment / module issues
+
+- **`ModuleNotFoundError: No module named 'torch'`**: Your virtual environment isn't active. Run `source gpu_env/bin/activate` and check with `which python`. In `sbatch` scripts, the `source` line has to be inside the script.
+- **`Permission denied` when running a `.sh` script**: Make it executable once with `chmod +x script.sh`.
+- **`Permission denied (publickey)` during `git clone`**: Your GitHub SSH key isn't set up on Explorer. Clone with the HTTPS URL instead: `git clone https://github.com/northeastern-rc/Intro-to-GPUs-Fall2026.git`.
+- **Batch job fails right away with no output file**: Check that the `--output` folder (e.g. `logs/`) exists. Slurm does not create it for you.
 
 ## Best Practices for Using GPUs on Explorer
 - **Choose the Right Partition:** Select the appropriate GPU partition based on your job requirements.
